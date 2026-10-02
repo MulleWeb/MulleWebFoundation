@@ -1,0 +1,4 @@
+aclocal
+automake
+libtoolize
+glibtoolize

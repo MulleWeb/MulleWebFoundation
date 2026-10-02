@@ -1,0 +1,19 @@
+This is a collection of Webclient library written on top of the
+MulleFoundation.
+
+It is the basis for MulleWebClient, MulleWebServer and it is part of the
+Foundation.
+
+| Consituents |
+|-------------|
+| MulleBase64 |
+| MulleCurl |
+| MulleObjCExpatFoundation |
+| MulleObjCHTTPFoundation |
+| MulleObjCInetFoundation |
+| MulleObjCInetOSFoundation |
+| MulleObjCJSMNFoundation |
+| MulleWebClient |
+| MulleZlib |
+
+

@@ -1,0 +1,8 @@
+      { @selector( MulleObjCDeps), @selector( MulleBase64) },
+      { @selector( MulleObjCDeps), @selector( MulleCurl) },
+      { @selector( MulleObjCDeps), @selector( MulleObjCHTTPFoundation) },
+      { @selector( MulleObjCDeps), @selector( MulleObjCInetFoundation) },
+      { @selector( MulleObjCDeps), @selector( MulleObjCExpatFoundation) },
+      { @selector( MulleObjCDeps), @selector( MulleObjCJSMNFoundation) },
+      { @selector( MulleObjCDeps), @selector( MulleWebClient) },
+      { @selector( MulleObjCDeps), @selector( MulleZlib) },

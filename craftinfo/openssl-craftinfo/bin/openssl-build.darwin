@@ -1,0 +1,314 @@
+#! /bin/sh
+#
+#   Copyright (c) 2021 Nat! - Mulle kybernetiK
+#   All rights reserved.
+#
+#   Redistribution and use in source and binary forms, with or without
+#   modification, are permitted provided that the following conditions are met:
+#
+#   Redistributions of source code must retain the above copyright notice, this
+#   list of conditions and the following disclaimer.
+#
+#   Redistributions in binary form must reproduce the above copyright notice,
+#   this list of conditions and the following disclaimer in the documentation
+#   and/or other materials provided with the distribution.
+#
+#   Neither the name of Mulle kybernetiK nor the names of its contributors
+#   may be used to endorse or promote products derived from this software
+#   without specific prior written permission.
+#
+#   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+#   AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+#   IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+#   ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+#   LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+#   CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+#   SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+#   INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+#   CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+#   ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+#   POSSIBILITY OF SUCH DAMAGE.
+#
+[ "${TRACE}" = 'YES' -o "${MULLE_BUILD_SH_TRACE}" = 'YES' ] && set -x && : "$0" "$@"
+
+
+MULLE_EXECUTABLE_VERSION="1.0.2"
+
+
+###########################################################################
+###   ###   ###   ###   ###   ###   ###   ###   ###   ###   ###   ###   ###
+###########################################################################
+# #
+# # PRELUDE - Standard startup code for loading mulle-bashfunctions
+# #
+###
+
+#
+# Figure out MULLE_BASHFUNCTIONS_LIBEXEC_DIR on this machine if needed.
+#
+if ! [ ${MULLE_BASHFUNCTIONS_LIBEXEC_DIR+x} ]
+then
+   MULLE_BASHFUNCTIONS_LIBEXEC_DIR="`mulle-bashfunctions libexec-dir`" || exit 1
+   export MULLE_BASHFUNCTIONS_LIBEXEC_DIR
+fi
+
+#
+# The booter reruns the executable either with bash or zsh, whatever the
+# system provides. On the second run --no-auto-shell will be set first.
+#
+if [ "${1:-}" != --no-auto-shell ]
+then
+   . "${MULLE_BASHFUNCTIONS_LIBEXEC_DIR}/mulle-boot.sh" || exit 1
+else
+   shift    # get rid of --no-auto-shell
+fi
+
+
+#
+# Include mulle-bashfunctions.sh         : default functions
+#         mulle-bashfunctions-none.sh    : almost no functions
+#         mulle-bashfunctions-minimal.sh : few functions for basic scripts
+#         mulle-bashfunctions-all.sh     : everything, even obscure functions
+#
+# Do this first to get aliases
+#
+MULLE_EXECUTABLE="${BASH_SOURCE[0]:-${(%):-%x}}"
+. "${MULLE_BASHFUNCTIONS_LIBEXEC_DIR}/mulle-bashfunctions-minimal.sh" || exit 1
+
+
+###
+# # Now we are in bash or zsh with bashfunctions loaded
+# #
+###########################################################################
+###   ###   ###   ###   ###   ###   ###   ###   ###   ###   ###   ###   ###
+###########################################################################
+
+
+usage()
+{
+   [ $# -ne 0 ] && log_error "$*"
+
+   cat <<EOF >&2
+Usage:
+   ${MULLE_USAGE_NAME} [flags] [command] [options]
+
+   Script to build openssl.
+
+Flags:
+EOF
+
+   options_technical_flags_usage "      : " >&2
+
+   cat <<EOF >&2
+
+Commands:
+   install : build and install [default]
+   build   : just build
+   version : script version
+EOF
+
+   exit 1
+}
+
+
+clean_main()
+{
+   log_entry "clean_main" "$@"
+
+   exekutor make clean
+}
+
+
+build_main()
+{
+   log_entry "build_main" "$@"
+
+   local cmdline
+   local arch
+
+   arch="$(uname -m)"
+   case "${arch}" in
+      arm64|aarch64)
+         cmdline="./Configure --prefix='${PREFIX}' darwin64-arm64-cc"
+      ;;
+      *)
+         cmdline="./Configure --prefix='${PREFIX}' darwin64-x86_64-cc"
+      ;;
+   esac
+   if [ ! -z "${SDK}" -a "${SDK}" != "Default" ]
+   then
+      r_escaped_shell_string "${SDK}"
+      cmdline="CFLAGS='-isysroot ${RVAL}' ${cmdline}"
+   fi
+
+   logging_tee_eval_exekutor "${LOGFILE}" "${TEEFILE}" "${cmdline}"
+   if [ $? -eq 0 -o $? -eq 255 ]
+   then
+      logging_tee_eval_exekutor "${LOGFILE}" "${TEEFILE}" exekutor make -j ${CORES}
+   else
+      return 1
+   fi
+}
+
+
+install_main()
+{
+   log_entry "install_main" "$@"
+
+   if ! build_main "$@"
+   then
+      return 1
+   fi
+
+   logging_tee_eval_exekutor "${LOGFILE}" "${TEEFILE}" make install_sw
+}
+
+
+main()
+{
+   local CONFIGURATION="Debug"
+   local SDK=""
+   local CORES=4
+   local PREFIX="/tmp"
+   local KITCHEN_DIR="kitchen"
+   local ROOT_DIR
+   local LOGFILE
+   local TEEFILE
+
+   while [ "$#" -ne 0 ]
+   do
+      if options_technical_flags "$1"
+      then
+         shift
+         continue
+      fi
+
+      case "$1" in
+         -h*|--help|help)
+            usage
+         ;;
+
+         --sdk)
+            [ $# -eq 1 ] && fail "Missing argument to \"$1\""
+            shift
+
+            SDK="$1"
+         ;;
+
+         --configuration)
+            [ $# -eq 1 ] && fail "Missing argument to \"$1\""
+            shift
+
+            CONFIGURATION="$1"
+         ;;
+
+         --kitchen-dir|--build-dir)
+            [ $# -eq 1 ] && fail "Missing argument to \"$1\""
+            shift
+
+            KITCHEN_DIR="$1"
+         ;;
+
+         --logfile)
+            [ $# -eq 1 ] && fail "Missing argument to \"$1\""
+            shift
+
+            LOGFILE="$1"
+         ;;
+
+         --teefile)
+            [ $# -eq 1 ] && fail "Missing argument to \"$1\""
+            shift
+
+            TEEFILE="$1"
+         ;;
+
+         --platform)
+            [ $# -eq 1 ] && fail "Missing argument to \"$1\""
+            shift
+
+            PLATFORM="$1"
+         ;;
+
+         --cores)
+            [ $# -eq 1 ] && fail "Missing argument to \"$1\""
+            shift
+
+            CORES="$1"
+         ;;
+
+         --root-dir)
+            [ $# -eq 1 ] && fail "Missing argument to \"$1\""
+            shift
+
+            ROOT_DIR="$1"
+         ;;
+
+         --prefix|--install-dir)
+            [ $# -eq 1 ] && fail "Missing argument to \"$1\""
+            shift
+
+            PREFIX="$1"
+         ;;
+
+         -*)
+            usage "Unknown flag \"$1\""
+         ;;
+
+         *)
+            break
+         ;;
+      esac
+
+      shift
+   done
+
+   options_setup_trace "${MULLE_TRACE}"
+
+   if [ -z "${TEEFILE}" ]
+   then
+      if [ "${MULLE_FLAG_LOG_VERBOSE}" ]
+      then
+         TEEFILE="/dev/stderr"
+      else
+         TEEFILE="/dev/null"
+      fi
+   fi
+
+   if [ -z "${LOGFILE}" ]
+   then
+      LOGFILE="/dev/null"
+   fi
+
+   # see with -ls
+   if [ "${MULLE_FLAG_LOG_SETTINGS}" = 'YES' ]
+   then
+      log_trace2 "CONFIGURATION = \"${CONFIGURATION}\""
+      log_trace2 "KITCHEN_DIR   = \"${KITCHEN_DIR}\""
+      log_trace2 "PLATFORM      = \"${PLATFORM}\""
+      log_trace2 "PREFIX        = \"${PREFIX}\""
+      log_trace2 "PWD           = \"${PWD}\""
+      log_trace2 "ROOT_DIR      = \"${ROOT_DIR}\""
+      log_trace2 "SDK           = \"${SDK}\""
+      log_trace2 "TEEFILE       = \"${TEEFILE}\""
+      log_trace2 "LOGFILE       = \"${LOGFILE}\""
+      log_trace2 "CORES         = \"${CORES}\""
+   fi
+
+   local cmd
+
+   cmd="${1:-install}"
+
+   case "${cmd}" in
+      build|clean|install)
+         ${cmd}_main "$@"
+      ;;
+
+      *)
+         usage "Unknown command \"${cmd}\""
+      ;;
+   esac
+}
+
+
+call_with_flags "main" "" "$@"

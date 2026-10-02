@@ -1,0 +1,120 @@
+{
+   project =
+   {
+      description="🛸 MulleWebFoundation does something";
+      domain="github";
+      language="c";
+      dialect="objc";
+      name="MulleWebFoundation";
+      user="MulleWeb";
+      repo="MulleWebFoundation";
+      homepage="https://github.com/MulleWeb/MulleFoundation";
+      license="BSD-3-Clause";
+   };
+   dependencies =
+   (
+      {
+         description="🧱 MulleFoundation amalgamates Foundations projects";
+         domain="github";
+         name="MulleFoundation";
+         repo="MulleFoundation";
+         url="https://github.com/MulleFoundation/MulleFoundation";
+         user="MulleFoundation";
+      },
+      {
+         domain="github";
+         name="openssl";
+         repo="openssl";
+         url="https://github.com/openssl/openssl";
+         user="openssl";
+      },
+      {
+         domain="generic";
+         name="curl";
+         repo="curl";
+         url="https://curl.haxx.se/curl/tree/";
+         user="";
+      },
+      {
+         domain="github";
+         name="expat";
+         repo="libexpat";
+         url="https://github.com/libexpat/libexpat";
+         user="libexpat";
+      },
+      {
+         domain="github";
+         name="zlib";
+         repo="zlib";
+         url="https://github.com/madler/zlib";
+         user="madler";
+      }
+   );
+   amalgamated =
+   (
+      {
+         description="💬 Decode and encode NSData with base64";
+         domain="clib";
+         name="src/MulleBase64";
+         repo="MulleBase64@*";
+         url="https://github.com/MulleWeb/MulleBase64@*";
+         user="MulleWeb";
+      },
+      {
+         description="🎫 HTTP and HTML utility methods and classes for mulle-objc";
+         domain="clib";
+         name="src/MulleObjCHTTPFoundation";
+         repo="MulleObjCHTTPFoundation@*";
+         url="https://github.com/MulleWeb/MulleObjCHTTPFoundation@*";
+         user="MulleWeb";
+      },
+      {
+         description="📠 Internet-related classes like NSHost and NSURL for mulle-objc";
+         domain="clib";
+         name="src/MulleObjCInetFoundation";
+         repo="MulleObjCInetFoundation@*";
+         url="https://github.com/MulleWeb/MulleObjCInetFoundation@*";
+         user="MulleWeb";
+      },
+      {
+         description="👴🏼 XML parser based on MulleObjCStandardFoundation and libexpat";
+         domain="clib";
+         name="src/MulleObjCExpatFoundation";
+         repo="MulleObjCExpatFoundation@*";
+         url="https://github.com/MulleFoundation/MulleObjCExpatFoundation@*";
+         user="MulleFoundation";
+      },
+      {
+         description="🌼 JSON support for mulle-objc";
+         domain="clib";
+         name="src/MulleObjCJSMNFoundation";
+         repo="MulleObjCJSMNFoundation@*";
+         url="https://github.com/MulleWeb/MulleObjCJSMNFoundation@*";
+         user="MulleWeb";
+      },
+      {
+         description="🥌 HTTP client library for mulle-objc";
+         domain="clib";
+         name="src/MulleCurl";
+         repo="MulleCurl@*";
+         url="https://github.com/MulleWeb/MulleCurl@*";
+         user="MulleWeb";
+      },
+      {
+         description="🐘 Zlib compression for mulle-objc";
+         domain="clib";
+         name="src/MulleZlib";
+         repo="MulleZlib@*";
+         url="https://github.com/MulleWeb/MulleZlib@*";
+         user="MulleWeb";
+      },
+      {
+         description="🕷  Web client library for mulle-objc";
+         domain="clib";
+         name="src/MulleWebClient";
+         repo="MulleWebClient@*";
+         url="https://github.com/MulleWeb/MulleWebClient@*";
+         user="MulleWeb";
+      }
+   );
+}
