@@ -31,6 +31,8 @@
 //  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 //  POSSIBILITY OF SUCH DAMAGE.
 //
+#define MULLE_WEB_FOUNDATION_VERSION ((0UL << 20) | (31 << 8) | 0)
+
 #import <MulleFoundation/MulleFoundation.h>
 
 #import <MulleBase64/MulleBase64.h>
