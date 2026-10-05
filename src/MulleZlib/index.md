@@ -26,7 +26,7 @@ macro and accessors, and exposes the `NSData( MulleZlib)` category via
 
 - **Purpose:** Identifies the MulleZlib library version.
 - **Key Macros / Functions:**
-  - `#define MULLE_ZLIB_VERSION  ((0UL << 20) | (15 << 8) | 16)` — packed `major/minor/patch` version number.
+  - `#define MULLE_ZLIB_VERSION  ((0UL << 20) | (15 << 8) | 17)` — packed `major/minor/patch` version number.
   - `static inline unsigned int   MulleZlib_get_version_major( void)` — returns the major version (`version >> 20`).
   - `static inline unsigned int   MulleZlib_get_version_minor( void)` — returns the minor version (`(version >> 8) & 0xFFF`).
   - `static inline unsigned int   MulleZlib_get_version_patch( void)` — returns the patch version (`version & 0xFF`).

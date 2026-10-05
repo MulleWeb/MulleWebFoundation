@@ -215,7 +215,7 @@ initialization; curl error codes are translated via `curl_easy_strerror`.
 ##### Version Macros & Functions (verbatim)
 
 ```c
-#define MULLE_CURL_VERSION  ((0UL << 20) | (19 << 8) | 2)
+#define MULLE_CURL_VERSION  ((0UL << 20) | (19 << 8) | 3)
 
 static inline unsigned int   MulleCurl_get_version_major( void)
 static inline unsigned int   MulleCurl_get_version_minor( void)
@@ -223,7 +223,7 @@ static inline unsigned int   MulleCurl_get_version_patch( void)
 
 extern uint32_t   MulleCurl_get_version( void);
 ```
-Current version is **0.19.2** (`(major << 20) | (minor << 8) | patch`).
+Current version is **0.19.3** (`(major << 20) | (minor << 8) | patch`).
 
 ### 3.2. `src/MulleCurlParser.h`
 

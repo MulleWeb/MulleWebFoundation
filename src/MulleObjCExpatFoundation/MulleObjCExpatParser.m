@@ -212,8 +212,11 @@ static NSString  *_keyForUTF8String( char *string)
 {
    // ephemeral, only valid during one run
    if( ! _dateFormatter)
+   {
       _dateFormatter = [[[NSDateFormatter alloc] initWithDateFormat:@"%Y-%m-%dT%H:%M:%SZ"
                                                allowNaturalLanguage:NO] autorelease];  // proper handling later
+      [_dateFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
+   }
    return( _dateFormatter);
 }
 

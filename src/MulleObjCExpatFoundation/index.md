@@ -64,10 +64,10 @@ if (!error) {
 
 #### Purpose
 
-Internal parser class for XML plist parsing. Usually accessed through NSPropertyListSerialization; direct use not typically needed.
+Internal parser class for XML plist parsing. Usually accessed through NSPropertyListSerialization; direct use not typically needed. It is a delegate of the generic MulleObjCXMLParser and builds the property list from the reported XML events.
 
 ```objc
-@interface MulleObjCExpatParser : NSObject
+@interface MulleObjCExpatParser : NSObject <MulleObjCXMLParserDelegate>
 @end
 ```
 
@@ -76,6 +76,64 @@ Internal parser class for XML plist parsing. Usually accessed through NSProperty
 - `_stack`: Stack-based structure for tracking nested XML elements
 - `_textStorage`: Accumulates text content during parsing
 - `_dateFormatter`: Converts ISO 8601 date strings to NSDate objects
+- `_error`: Set by the delegate on failure
+
+### MulleObjCXMLParser
+
+#### Purpose
+
+A generic, incremental SAX-style XML parser (libexpat underneath). It knows nothing about the document it reads; it only reports elements, attributes and character data to its delegate. This is the foundation for feeds (RSS/Atom), HTML or arbitrary XML consumers; MulleObjCExpatParser (the property list parser) is one such consumer.
+
+```objc
+@interface MulleObjCXMLParser : NSObject
+{
+   id       _delegate;      // assign, not retained
+   void    *_parser;        // XML_Parser (opaque here)
+   BOOL     _didAbort;
+}
+
+@property( assign) id <MulleObjCXMLParserDelegate> delegate;
+
++ (instancetype) parserWithDelegate:(id <MulleObjCXMLParserDelegate>) delegate;
+- (instancetype) initWithDelegate:(id <MulleObjCXMLParserDelegate>) delegate;
+
+// Returns YES on success. On failure the delegate is told via
+// -parser:parseErrorOccurred: and NO is returned.
+- (BOOL) parseData:(NSData *) data;
+- (BOOL) parseBytes:(void *) bytes
+             length:(NSUInteger) length
+            isFinal:(BOOL) isFinal;
+
+- (void) abortParsing;
+@end
+```
+
+Feed it a whole document with `-parseData:` or stream it in chunks with `-parseBytes:length:isFinal:`. The delegate is not retained.
+
+#### MulleObjCXMLParserDelegate Protocol
+
+A SAX-style parser delegate. All methods are optional.
+
+```objc
+@protocol MulleObjCXMLParserDelegate <NSObject>
+
+@optional
+
+- (void) parser:(MulleObjCXMLParser *) parser
+  didStartElement:(NSString *) elementName
+     attributes:(NSDictionary *) attributes;
+
+- (void) parser:(MulleObjCXMLParser *) parser
+  foundCharacters:(NSString *) string;
+
+- (void) parser:(MulleObjCXMLParser *) parser
+    didEndElement:(NSString *) elementName;
+
+- (void) parser:(MulleObjCXMLParser *) parser
+  parseErrorOccurred:(NSString *) error;
+
+@end
+```
 
 ### Supported XML Plist Format
 

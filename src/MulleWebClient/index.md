@@ -58,7 +58,7 @@ imports all four category headers:
 #### Version
 
 ```c
-#define MULLE_WEB_CLIENT_VERSION  ((0UL << 20) | (1 << 8) | 0)
+#define MULLE_WEB_CLIENT_VERSION  ((0UL << 20) | (1 << 8) | 1)
 ```
 
 ```c

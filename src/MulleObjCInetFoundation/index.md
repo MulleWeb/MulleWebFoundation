@@ -6,7 +6,7 @@
 - MulleObjCInetFoundation provides Internet-related Objective‑C classes for mulle-objc: primarily NSURL and NSHost plus URL-related character-set helpers and scheme handler support.
 - Solves URL parsing, percent-escape handling, and exposes convenient accessors (scheme, user, host, port, path, query, fragment, resourceSpecifier).
 - Key features: percent-escaped internal storage, UTF8-based init helpers, pluggable scheme handlers, and URL character-set helpers for encoding/decoding.
-- Relationship: builds on Mulle Foundation pieces (MulleFoundationBase) and integrates with the mulle-objc ecosystem.
+- Relationship: builds on Mulle Foundation pieces (MulleFoundation) and integrates with the mulle-objc ecosystem.
 
 ## 2. Key Concepts & Design Philosophy
 
@@ -34,6 +34,10 @@
 - Purpose: argument bundle handed to a scheme handler's `initURL` selector.
 - Key Fields: scheme (`struct MulleCharData`); uri (`struct MulleCharData`).
 - Use: e.g. consumed by the file-scheme handler (`mulleInitFileURLWithArguments:`) in NSURL+File.m.
+
+#### NSURLFileScheme (global)
+- Purpose: Global `NSString *` holding the `file:` scheme string.
+- Declaration: `MULLE_OBJC_INET_FOUNDATION_EXTERN_GLOBAL NSString *NSURLFileScheme;`
 
 #### NSURL (class)
 - Purpose: Represent and parse URL strings; provide component accessors.
@@ -64,6 +68,14 @@
 - Scheme handler support:
   - +mulleRegisterHandler:forScheme:
   - Default helpers: -mulleGenericResourceSpecifierDescription, -mulleGenericURLDescription, -mulleIsAbsolutePath, -mulleEscapedResourceSpecifier
+- File URL support:
+  - -fileSystemRepresentation -> char *
+  - -getFileSystemRepresentation:maxLength:
+  - -initFileURLWithPath:(NSString *)path
+  - +fileURLWithPath:(NSString *)path
+  - -initFileURLWithPath:(NSString *)path isDirectory:(BOOL)isDirectory
+  - +fileURLWithPath:(NSString *)path isDirectory:(BOOL)isDirectory
+  - +fileURLWithPathComponents:(NSArray *)components
 - Legacy API (present but not preferred): -isFileURL, -standardizedURL, -absoluteString, -relativePath, -pathComponents, -lastPathComponent, -pathExtension, etc.
 
 ### 3.2. [NSHost.h]
@@ -98,7 +110,15 @@
   - +mulleNonPercentEscapeCharacterSet
 - Use: pass the appropriate allowed character set into low-level init APIs that accept allowedURICharacterSet.
 
-### 3.5. Other headers
+### 3.5. [NSData+NSURL.h]
+- Category `NSData( NSURL)` for reading/writing data via URLs.
+- Methods:
+  - +dataWithContentsOfURL:options:error:
+  - +dataWithContentsOfURL:
+  - -initWithContentsOfURL:
+  - -writeToURL:atomically:
+
+### 3.6. Other headers
 - MulleObjCInetFoundation.h: version macro and exports; include this to import the public surface.
 - Misc reflect/generic headers: build-time include wrappers (not part of runtime API surface).
 
@@ -178,7 +198,7 @@ main( void)
 
 ## 7. Dependencies
 
-- MulleFoundationBase (amalgamated Mulle Foundation pieces)
+- MulleFoundation (amalgamated Mulle Foundation pieces)
 - mulle-objc-list (runtime introspection helpers)
 - mulle-c11 (platform C support)
 

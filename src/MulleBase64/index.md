@@ -70,9 +70,9 @@ int   base64_decode( const unsigned char *_src,
 ### 3.2. `src/MulleBase64.h` — version
 
 ```c
-#define MULLE_BASE64_VERSION  ((0UL << 20) | (1 << 8) | 2)
+#define MULLE_BASE64_VERSION  ((0UL << 20) | (1 << 8) | 3)
 ```
-- Encoded as `(major << 20) | (minor << 8) | patch`, i.e. version **0.1.2**.
+- Encoded as `(major << 20) | (minor << 8) | patch`, i.e. version **0.1.3**.
 
 ```c
 static inline unsigned int   MulleBase64_get_version_major( void)
