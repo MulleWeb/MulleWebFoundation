@@ -8,7 +8,7 @@
       name="MulleWebFoundation";
       user="MulleWeb";
       repo="MulleWebFoundation";
-      homepage="https://github.com/MulleWeb/MulleFoundation";
+      homepage="https://github.com/MulleWeb/MulleWebFoundation";
       license="BSD-3-Clause";
    };
    dependencies =

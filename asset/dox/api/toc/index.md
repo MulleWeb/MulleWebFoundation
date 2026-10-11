@@ -429,6 +429,9 @@ char  *mulle_strnstr( char *s, size_t len, char *search);
   distinct JSON documents. UTF-8 only.
 - When parsing incrementally, do not split a token across calls: send
   `parseBytes:"[" length:1` then `parseBytes:"[]" length:2`.
+- Requires `MulleFoundation` version 0.30.0 up to 0.31.0; the current
+  `MULLE_OBJC_JSMN_FOUNDATION_VERSION` is 0.18.13
+  (`(0UL << 20) | (18 << 8) | 13`).
 
 ### 3.7. `MulleObjCExpatFoundation` — XML and XML plists (`src/MulleObjCExpatFoundation/`)
 

@@ -313,7 +313,7 @@ NSLog(@"Age: %@", age);
 
 ## 7. Dependencies
 
-- **MulleFoundation** - NSDictionary, NSArray, NSString, NSNumber
+- **MulleFoundation** - NSDictionary, NSArray, NSString, NSNumber (requires version 0.30.0 up to 0.31.0)
 - **JSMN** - Embedded JSON parser (C) - vendored, no external dependency
 - **mulle-objc** (runtime) - Objective-C runtime support
 - Standard C library
@@ -335,5 +335,6 @@ NSLog(@"Age: %@", age);
 ## 10. Version Information
 
 MulleObjCJSMNFoundation version macro: `MULLE_OBJC_JSMN_FOUNDATION_VERSION`
+- Current version: `0.18.13` (`(0UL << 20) | (18 << 8) | 13`)
 - Format: `(major << 20) | (minor << 8) | patch`
 - Reflects both wrapper and bundled JSMN versions
