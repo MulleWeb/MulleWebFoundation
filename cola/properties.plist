@@ -81,8 +81,8 @@
          domain="clib";
          name="src/MulleObjCExpatFoundation";
          repo="MulleObjCExpatFoundation@*";
-         url="https://github.com/MulleFoundation/MulleObjCExpatFoundation@*";
-         user="MulleFoundation";
+         url="https://github.com/MulleWeb/MulleObjCExpatFoundation@*";
+         user="MulleWeb";
       },
       {
          description="🌼 JSON support for mulle-objc";
